@@ -5,10 +5,13 @@ import java.util.Set;
 
 public class Chessboard {
     //private Piece[][] chessboard;
-    Node[][] board;
+    Node[][] board; // 2D array representing the board grid with Node cells
+
+    // Sets to track threats from previously placed queens
     Set<Integer> columns = new HashSet<>();
-    Set<Integer> ascDiags = new HashSet<>();
-    Set<Integer> descDiags = new HashSet<>();
+    Set<Integer> ascDiags = new HashSet<>();// ascending diagonals (row + col)
+    Set<Integer> descDiags = new HashSet<>();// descending diagonals (row - col)
+    // Stores all valid board solutions
     List<Node[][]> allSolutions = new ArrayList<>();
 
 
@@ -19,6 +22,9 @@ public class Chessboard {
 
     }
 
+    /**
+     * Initializes each Node in the 8x8 grid.
+     */
     private void initializeNodes() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -27,6 +33,9 @@ public class Chessboard {
         }
     }
 
+    /**
+     * Returns the Node at the specified position, or null if out of bounds.
+     */
     public Node getNode(int row, int col) {
         if (isInsideBoard(row, col)) {
             return board[row][col];
@@ -44,6 +53,10 @@ public class Chessboard {
 
 
     }*/
+
+    /**
+     * Clears the board by removing all pieces.
+     */
     public void addValue() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -52,6 +65,10 @@ public class Chessboard {
         }
     }
 
+    /**
+     * Prints the current board to the console.
+     * "Q" for queen, "-1" for empty square.
+     */
     public void printBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -64,19 +81,25 @@ public class Chessboard {
         }
     }
 
-
+    /**
+     * Returns the Node at the specified position if valid.
+     */
     public Node getPieceAt(int row, int col) {
-        if (isInsideBoard(row, col)) {
-            return board[row][col];
-        }
-        return null;
+        return isInsideBoard(row, col) ? board[row][col] : null;
+
     }
 
+    /**
+     * Places a piece at the specified location on the board.
+     */
     public void setPieceAt(int row, int col, Piece piece) {
         if (isInsideBoard(row, col)) board[row][col].piece = piece;
     }
 
 
+    /**
+     * Checks if a position is within the board boundaries.
+     */
     private boolean isInsideBoard(int row, int col) {
         return row >= 0 & row < 8 && col >= 0 & col < 8;
     }
@@ -129,6 +152,9 @@ public class Chessboard {
         return false;
     }
 
+    /**
+     * Checks if a queen can be safely placed at the given position.
+     */
     private boolean isSafe(int row, int col) {
         return !columns.contains(col) &&
                 !ascDiags.contains(row + col) &&
@@ -136,12 +162,19 @@ public class Chessboard {
 
     }
 
+    /**
+     * Places a queen on the board and updates tracking sets.
+     */
     private void placeQueen(int row, int col) {
         board[row][col].piece = new Piece(PieceType.QUEEN);
         columns.add(col);
         ascDiags.add(row + col);
         descDiags.add(row - col);
     }
+
+    /**
+     * Removes a queen from the board and updates tracking sets.
+     */
 
     private void removeQueen(int row, int col) {
         board[row][col].piece = null;
@@ -150,6 +183,9 @@ public class Chessboard {
         descDiags.remove(row - col);
     }
 
+    /**
+     * Recursively finds and stores all valid N-Queens solutions.
+     */
     public void solveAllQueens(int row) {
         if (row == 8) {
             saveSolution(); // found one valid setup
@@ -165,6 +201,9 @@ public class Chessboard {
         }
     }
 
+    /**
+     * Saves the current board configuration as a solution.
+     */
     private void saveSolution() {
         Node[][] copy = new Node[8][8];
         for (int i = 0; i < 8; i++) {
@@ -179,7 +218,10 @@ public class Chessboard {
         allSolutions.add(copy);
     }
 
-        public void printAllSolutions() {
+    /**
+     * Prints all stored solutions to the console.
+     */
+    public void printAllSolutions() {
             int count = 1;
             for (Node[][] solution : allSolutions) {
                 System.out.println("Solution " + count++);
